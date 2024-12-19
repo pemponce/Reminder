@@ -2,18 +2,22 @@ package com.example.reminderproject.config.security;
 
 import com.example.reminderproject.dto.jwt.JwtAuthenticationFilter;
 import com.example.reminderproject.service.UserService;
-import com.nimbusds.oauth2.sdk.auth.JWTAuthentication;
-import lombok.AllArgsConstructor;
+import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -28,9 +32,12 @@ public class SecurityConfig {
 
     private final UserService userService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(request -> {
@@ -49,15 +56,34 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-
         return http.build();
     }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userService.userDetailsService());
-        authProvider.setPasswordEncoder(passwordEncoder);
+        authProvider.setUserDetailsService(userService.userDetails());
+        authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+    public static void loadEnv(){
+        Dotenv dotenv= Dotenv.configure().load();
+        String dataSourceUrl = dotenv.get("DATA_SOURCE");
+        String dataSourceUsername = dotenv.get("DATABASE_NAME");
+        String dataSourcePassword = dotenv.get("DATA_PASSWORD");
+        String applicationName = dotenv.get("ROOT_NAME");
+        String springTokenKey = dotenv.get("SIGN_IN_KEY");
+
+        System.setProperty("DATA_SOURCE", dataSourceUrl);
+        System.setProperty("DATABASE_NAME", dataSourceUsername);
+        System.setProperty("DATA_PASSWORD", dataSourcePassword);
+        System.setProperty("ROOT_NAME", applicationName);
+        System.setProperty("SIGN_IN_KEY", springTokenKey);
     }
 }
