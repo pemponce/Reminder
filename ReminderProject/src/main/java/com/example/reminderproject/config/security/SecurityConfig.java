@@ -75,15 +75,15 @@ public class SecurityConfig {
     public static void loadEnv(){
         Dotenv dotenv= Dotenv.configure().load();
         String dataSourceUrl = dotenv.get("DATA_SOURCE");
-        String dataSourceUsername = dotenv.get("DATABASE_NAME");
+        String dataSourceUsername = dotenv.get("ROOT_NAME");
         String dataSourcePassword = dotenv.get("DATA_PASSWORD");
-        String applicationName = dotenv.get("ROOT_NAME");
+        String applicationName = dotenv.get("PROJ_NAME");
         String springTokenKey = dotenv.get("SIGN_IN_KEY");
 
         System.setProperty("DATA_SOURCE", dataSourceUrl);
-        System.setProperty("DATABASE_NAME", dataSourceUsername);
+        System.setProperty("ROOT_NAME", dataSourceUsername);
         System.setProperty("DATA_PASSWORD", dataSourcePassword);
-        System.setProperty("ROOT_NAME", applicationName);
+        System.setProperty("PROJ_NAME", applicationName);
         System.setProperty("SIGN_IN_KEY", springTokenKey);
     }
 }
