@@ -20,19 +20,10 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
-    private final JwtConfig jwtConfig;
 
     @GetMapping("/me")
     @Operation(summary = "Доступен только авторизованным пользователям")
-    public UserDto currentUserInfo(@RequestHeader("Authorization") String authorizationHeader) throws JsonProcessingException {
-        String jwt = authorizationHeader.substring(7);
-        String payload = jwtConfig.jwtDecode(jwt);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> payloadMap = objectMapper.readValue(payload, new TypeReference<Map<String, Object>>() {});
-        var user = userService.getUserByUsername((String) payloadMap.get("username"));
-        userMapper.toUserDto(userService.getCurrentUser());
-
-        return userMapper.toUserDto(user);
+    public UserDto currentUserInfo() {
+        return userMapper.toUserDto(userService.getCurrentUser());
     }
 }
