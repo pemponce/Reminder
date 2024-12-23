@@ -76,6 +76,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetailsService userDetails() {
-        return this::getUserByUsername;
+        return this::getUserByEmail;
     }
 }
