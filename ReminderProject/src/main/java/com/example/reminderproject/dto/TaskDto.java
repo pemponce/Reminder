@@ -18,6 +18,7 @@ public class TaskDto {
     private String content;
     private String attachmentPath = "ReminderProject/data/";
     private String author;
+    private Long project_id;
     @Schema(title = "Статус задачи")
     private Status status;
 }

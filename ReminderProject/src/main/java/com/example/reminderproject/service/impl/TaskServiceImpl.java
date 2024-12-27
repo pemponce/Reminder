@@ -1,5 +1,6 @@
 package com.example.reminderproject.service.impl;
 
+import com.example.reminderproject.dto.TaskDto;
 import com.example.reminderproject.model.Status;
 import com.example.reminderproject.model.Task;
 import com.example.reminderproject.model.User;
@@ -19,9 +20,18 @@ public class TaskServiceImpl implements TaskService {
     private final UserService userService;
 
     @Override
-    public void createTask(Task task) {
+    public void createTask(TaskDto taskDto) {
         var user = userService.getCurrentUser();
-        task.setAuthor(user.getUsername());
+        taskDto.setAuthor(user.getUsername());
+
+        Task task = Task.builder()
+                .title(taskDto.getTitle())
+                .status(taskDto.getStatus())
+                .attachmentPath(taskDto.getAttachmentPath())
+                .content(taskDto.getContent())
+                .author(taskDto.getAuthor())
+                .project_id(taskDto.getProject_id())
+                .build();
         taskRepository.save(task);
     }
 
