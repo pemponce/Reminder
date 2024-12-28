@@ -16,6 +16,6 @@ public interface UserService {
     User getUserByUsername(String username);
     Optional<User> findUserById(Long id);
     User getUserById(Long id);
-    boolean authenticate(String email, String password);
+    boolean authenticate(String username, String password);
     UserDetailsService userDetails();
 }

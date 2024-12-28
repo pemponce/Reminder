@@ -15,6 +15,11 @@ public class ProjectUsersServiceImpl implements ProjectUsersService {
     private final ProjectUsersRepository projectUsersRepository;
 
     @Override
+    public void create(ProjectUsers projectUsers) {
+        projectUsersRepository.save(projectUsers);
+    }
+
+    @Override
     public List<ProjectUsers> getProjUsersByProjId(Long projId) {
         return projectUsersRepository.getProjectUsersByProjectId(projId);
     }

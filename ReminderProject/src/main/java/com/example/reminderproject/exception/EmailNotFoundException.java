@@ -8,6 +8,6 @@ public class EmailNotFoundException extends RuntimeException implements Logg{
 
     public EmailNotFoundException(String email) {
         super(String.format("Аккаунта зарегестрированного на адрес %s, не существует", email));
-        LOGGER.error(String.format("Аккаунта зарегестрированного на адрес %s, не существует", email));
+        LOGGER().error(String.format("Аккаунта зарегестрированного на адрес %s, не существует", email));
     }
 }

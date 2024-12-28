@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 public interface Logg {
 
-    Logger LOGGER=LoggerFactory.getLogger(EmailNotFoundException.class);
+    default Logger LOGGER() {
+        return LoggerFactory.getLogger(this.getClass());
+    }
 
 }

@@ -8,6 +8,6 @@ public class IncorrectLogInDataException extends RuntimeException implements Log
 
     public IncorrectLogInDataException() {
         super("Неверные данные для входа в аккаунт, попробуйте другую почту или пароль");
-        LOGGER.error("Неверные данные для входа в аккаунт, попробуйте другую почту или пароль");
+        LOGGER().error("Неверные данные для входа в аккаунт, попробуйте другую почту или пароль");
     }
 }

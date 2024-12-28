@@ -28,11 +28,11 @@ public class AuthServiceImpl implements AuthService {
     public JwtAuthenticationResponse signIn(SignInRequest signInRequest) {
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                signInRequest.getEmail(),
+                signInRequest.getUsername(),
                 signInRequest.getPassword()
         ));
 
-        UserDetails user = userService.userDetails().loadUserByUsername(signInRequest.getEmail());
+        UserDetails user = userService.userDetails().loadUserByUsername(signInRequest.getUsername());
 
         var jwt = jwtService.generateToken(user);
         return new JwtAuthenticationResponse(jwt);

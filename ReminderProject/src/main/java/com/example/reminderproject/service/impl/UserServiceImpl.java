@@ -70,12 +70,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean authenticate(String email, String password) {
-        return getUserByEmail(email) != null && passwordEncoder.matches(password, getUserByEmail(email).getPassword());
+    public boolean authenticate(String username, String password) {
+        return getUserByUsername(username) != null && passwordEncoder.matches(password, getUserByUsername(username).getPassword());
     }
 
     @Override
     public UserDetailsService userDetails() {
-        return this::getUserByEmail;
+        return this::getUserByUsername;
     }
 }

@@ -8,7 +8,7 @@ public class ProjectNameAlreadyExistException extends RuntimeException implement
 
     public ProjectNameAlreadyExistException(String projName) {
         super(String.format("Проект с именем %s уже существует ", projName));
-        LOGGER.error(String.format("Проект с именем %s уже существует ", projName));
+        LOGGER().error(String.format("Проект с именем %s уже существует ", projName));
     }
 
 }

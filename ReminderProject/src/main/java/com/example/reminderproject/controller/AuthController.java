@@ -25,9 +25,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public JwtAuthenticationResponse signIn(@RequestBody @Valid SignInRequest request) {
-        boolean isAuth = userService.authenticate(request.getEmail(), request.getPassword());
+        boolean isAuth = userService.authenticate(request.getUsername(), request.getPassword());
         if (isAuth) {
-            LOGGER.info(String.format("Вход в аккаунт пользователем -> %s", request.getEmail()));
+            LOGGER.info(String.format("Вход в аккаунт пользователем -> %s", request.getUsername()));
             return authService.signIn(request);
         } else {
             throw new IncorrectLogInDataException();

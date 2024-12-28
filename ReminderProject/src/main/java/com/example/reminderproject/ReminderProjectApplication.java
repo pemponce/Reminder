@@ -13,3 +13,8 @@ public class ReminderProjectApplication {
     }
 
 }
+
+
+/*
+    TODO: пофиксить. Пользователь может создать от имени другого пользователя проект.
+*/
