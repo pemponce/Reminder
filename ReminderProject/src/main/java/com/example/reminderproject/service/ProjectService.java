@@ -12,4 +12,6 @@ public interface ProjectService {
     Project getProjectByProjectName(String projectName);
     Optional<List<Project>> findProjectsByUser_id(Long userId);
     List<Project> getProjectsByUser_id(Long userId);
+    Optional<Project> findProjectById(Long id);
+    Project getProjectById(Long id);
 }

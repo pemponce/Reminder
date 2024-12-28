@@ -12,7 +12,7 @@ public class ProjectNotFoundException extends RuntimeException implements Logg {
     }
 
     public ProjectNotFoundException(Long id) {
-        super(String.format("Пользователь с id %d -> не найден.", id));
-        LOGGER.error(String.format("Пользователь с id %d -> не найден.", id));
+        super(String.format("Проект с id %d -> не найден.", id));
+        LOGGER.error(String.format("Проект с id %d -> не найден.", id));
     }
 }

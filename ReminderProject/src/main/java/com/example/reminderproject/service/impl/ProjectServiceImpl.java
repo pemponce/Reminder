@@ -53,4 +53,14 @@ public class ProjectServiceImpl implements ProjectService {
         return findProjectsByUser_id(userId)
                 .orElseThrow(() -> new UserZeroProjectsException(userService.getUserById(userId).getUsername()));
     }
+
+    @Override
+    public Optional<Project> findProjectById(Long id) {
+        return projectRepository.findProjectById(id);
+    }
+
+    @Override
+    public Project getProjectById(Long id) {
+        return findProjectById(id).orElseThrow(() -> new ProjectNotFoundException(id));
+    }
 }
