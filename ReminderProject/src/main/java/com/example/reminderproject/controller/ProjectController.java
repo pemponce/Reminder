@@ -3,6 +3,7 @@ package com.example.reminderproject.controller;
 import com.example.reminderproject.dto.ProjectDto;
 import com.example.reminderproject.service.ProjectService;
 import com.example.reminderproject.service.ProjectUsersService;
+import com.example.reminderproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

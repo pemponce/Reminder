@@ -35,13 +35,13 @@ public class ProjectServiceImpl implements ProjectService {
 
         Project project = Project.builder()
                 .projectName(projectDto.getProjectName())
-                .userId(projectDto.getUserId())
+                .userId(userService.getCurrentUser().getId())
                 .build();
 
         projectRepository.save(project);
 
         ProjectUsers projectUsers = ProjectUsers.builder()
-                .userId(projectDto.getUserId())
+                .userId(userService.getCurrentUser().getId())
                 .projectId(project.getId())
                 .build();
 
