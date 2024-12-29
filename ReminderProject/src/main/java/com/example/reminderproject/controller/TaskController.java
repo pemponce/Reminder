@@ -1,6 +1,8 @@
 package com.example.reminderproject.controller;
 
 import com.example.reminderproject.dto.TaskDto;
+import com.example.reminderproject.exception.ProjectNotFoundException;
+import com.example.reminderproject.exception.UserNotAllowedToThisProjectException;
 import com.example.reminderproject.model.Project;
 import com.example.reminderproject.model.ProjectUsers;
 import com.example.reminderproject.service.ProjectService;
@@ -31,20 +33,29 @@ public class TaskController {
     public void TaskCreation(@PathVariable Long projectId, @RequestBody TaskDto taskDto) {
         var currUser = userService.getCurrentUser();
         var project = projectService.getProjectById(projectId);
-        if(project.getId().equals(currUser.getId())) {
+
+        // Проверка, существует ли проект
+        if (project == null) {
+            throw new ProjectNotFoundException(projectId);
+        }
+
+        if (project.getUserId().equals(currUser.getId())) {
             taskDto.setProject_id(project.getId());
             taskService.createTask(taskDto);
+            LOGGER.info(String.format("%s -> Создал новый таск (%s)", currUser.getUsername(), taskDto.getTitle()));
         } else {
-            for (var proj : projectUsersService.getProjUsersByProjId(project.getId())) {
-                if(proj.getUserId().equals(currUser.getId()) && proj.getProjectId().equals(project.getId())) {
-                    if (proj.getUserId().equals(currUser.getId())) {
-                        taskService.createTask(taskDto);
-                    }
-                    break;
-                }
-            }
+            boolean isMember = projectUsersService.getProjUsersByProjId(project.getId())
+                    .stream()
+                    .anyMatch(proj -> proj.getUserId().equals(currUser.getId()));
 
-            LOGGER.error(String.format("%s не являетесь членом этого проекта", userService.getCurrentUser().getUsername()));
+            if (isMember) {
+                taskDto.setProject_id(project.getId());
+                taskService.createTask(taskDto);
+                LOGGER.info(String.format("%s -> Создал новый таск (%s)", currUser.getUsername(), taskDto.getTitle()));
+
+            } else {
+                throw new UserNotAllowedToThisProjectException(currUser.getUsername());
+            }
         }
     }
 }
