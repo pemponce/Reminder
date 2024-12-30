@@ -6,9 +6,12 @@ import com.example.reminderproject.exception.ProjectNotFoundException;
 import com.example.reminderproject.exception.UserZeroProjectsException;
 import com.example.reminderproject.model.Project;
 import com.example.reminderproject.model.ProjectUsers;
+import com.example.reminderproject.model.Tag;
 import com.example.reminderproject.repository.ProjectRepository;
+import com.example.reminderproject.repository.TagRepository;
 import com.example.reminderproject.service.ProjectService;
 import com.example.reminderproject.service.ProjectUsersService;
+import com.example.reminderproject.service.TagService;
 import com.example.reminderproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -25,32 +29,41 @@ public class ProjectServiceImpl implements ProjectService {
     private final static Logger LOGGER = LoggerFactory.getLogger(ProjectServiceImpl.class);
 
     private final ProjectRepository projectRepository;
-    private final ProjectUsersService projectUsersService;
+    private final TagService tagService;
     private final UserService userService;
 
     public void create(ProjectDto projectDto) {
+        // Проверка, существует ли проект с таким именем
         if (findProjectByProjectName(projectDto.getProjectName()).isPresent()) {
             throw new ProjectNameAlreadyExistException(projectDto.getProjectName());
         }
 
+        // Сохраняем проект
         Project project = Project.builder()
                 .projectName(projectDto.getProjectName())
                 .userId(userService.getCurrentUser().getId())
                 .build();
 
-        projectRepository.save(project);
+        project = projectRepository.save(project);
 
-        ProjectUsers projectUsers = ProjectUsers.builder()
-                .userId(userService.getCurrentUser().getId())
-                .projectId(project.getId())
-                .build();
+        // Сохраняем теги и связываем их с проектом
+        if (projectDto.getTags() != null && !projectDto.getTags().isEmpty()) {
+            Project finalProject = project;
+            List<Tag> tags = projectDto.getTags().stream()
+                    .map(tagDto -> Tag.builder()
+                            .tagName(tagDto.getTagName())
+                            .color(tagDto.getColor())
+                            .project(finalProject)
+                            .build())
+                    .collect(Collectors.toList());
 
-        projectUsersService.create(projectUsers);
+            tagService.saveAll(tags);
+        }
 
-        LOGGER.info(String.format("Создан новый проект -> %s : пользователем -> %s ",
-                project.getProjectName(),
-                userService.getUserById(project.getUserId()).getUsername()));
+        // Логирование успешного создания проекта
+        LOGGER.info("Создан новый проект: {}", project.getProjectName());
     }
+
 
     @Override
     public Optional<Project> findProjectByProjectName(String projectName) {

@@ -3,8 +3,6 @@ package com.example.reminderproject.controller;
 import com.example.reminderproject.dto.TaskDto;
 import com.example.reminderproject.exception.ProjectNotFoundException;
 import com.example.reminderproject.exception.UserNotAllowedToThisProjectException;
-import com.example.reminderproject.model.Project;
-import com.example.reminderproject.model.ProjectUsers;
 import com.example.reminderproject.service.ProjectService;
 import com.example.reminderproject.service.ProjectUsersService;
 import com.example.reminderproject.service.TaskService;
@@ -34,7 +32,6 @@ public class TaskController {
         var currUser = userService.getCurrentUser();
         var project = projectService.getProjectById(projectId);
 
-        // Проверка, существует ли проект
         if (project == null) {
             throw new ProjectNotFoundException(projectId);
         }

@@ -6,6 +6,8 @@ import jakarta.persistence.Lob;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class TaskDto {
 
@@ -21,4 +23,7 @@ public class TaskDto {
     private Long project_id;
     @Schema(title = "Статус задачи")
     private Status status;
+
+    @Schema(title = "Список тегов (ID)")
+    private List<Long> tagIds;
 }
