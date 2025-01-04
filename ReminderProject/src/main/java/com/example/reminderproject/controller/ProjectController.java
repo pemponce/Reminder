@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/project")
+@RequestMapping("/api/project")
 @RequiredArgsConstructor
 @CrossOrigin
 public class ProjectController {

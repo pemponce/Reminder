@@ -2,17 +2,19 @@ package com.example.reminderproject.controller;
 
 import com.example.reminderproject.dto.UserDto;
 import com.example.reminderproject.mapper.UserMapper;
+import com.example.reminderproject.model.User;
 import com.example.reminderproject.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
-@RequestMapping("/account")
+@RequestMapping("/api/account")
 @RequiredArgsConstructor
 @CrossOrigin
 public class UserController {

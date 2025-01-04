@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/{projectId}/task")
+@RequestMapping("/api/{projectId}/task")
 @RequiredArgsConstructor
 @CrossOrigin
 public class TaskController {
