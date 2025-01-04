@@ -40,6 +40,7 @@ public class TaskController {
             taskDto.setProject_id(project.getId());
             taskService.createTask(taskDto);
             LOGGER.info(String.format("%s -> Создал новый таск (%s)", currUser.getUsername(), taskDto.getTitle()));
+            LOGGER.info(String.format("content (%s)", taskDto.getContent()));
         } else {
             boolean isMember = projectUsersService.getProjUsersByProjId(project.getId())
                     .stream()

@@ -39,8 +39,15 @@ public class TaskServiceImpl implements TaskService {
                 .tags(tags)
                 .build();
 
+
         taskRepository.save(task);
     }
+
+    @Override
+    public Task getTaskById(Long id) {
+        return taskRepository.getTaskById(id);
+    }
+
     @Override
     public Task editTask(Long task_id) {
         var task = taskRepository.getTaskById(task_id);

@@ -38,7 +38,6 @@ public class ProjectServiceImpl implements ProjectService {
             throw new ProjectNameAlreadyExistException(projectDto.getProjectName());
         }
 
-        // Сохраняем проект
         Project project = Project.builder()
                 .projectName(projectDto.getProjectName())
                 .userId(userService.getCurrentUser().getId())
@@ -46,7 +45,6 @@ public class ProjectServiceImpl implements ProjectService {
 
         project = projectRepository.save(project);
 
-        // Сохраняем теги и связываем их с проектом
         if (projectDto.getTags() != null && !projectDto.getTags().isEmpty()) {
             Project finalProject = project;
             List<Tag> tags = projectDto.getTags().stream()
@@ -60,7 +58,6 @@ public class ProjectServiceImpl implements ProjectService {
             tagService.saveAll(tags);
         }
 
-        // Логирование успешного создания проекта
         LOGGER.info("Создан новый проект: {}", project.getProjectName());
     }
 
