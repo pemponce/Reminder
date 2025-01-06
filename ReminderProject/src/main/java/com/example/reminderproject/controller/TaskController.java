@@ -3,6 +3,7 @@ package com.example.reminderproject.controller;
 import com.example.reminderproject.dto.TaskDto;
 import com.example.reminderproject.exception.ProjectNotFoundException;
 import com.example.reminderproject.exception.UserNotAllowedToThisProjectException;
+import com.example.reminderproject.model.Task;
 import com.example.reminderproject.service.ProjectService;
 import com.example.reminderproject.service.ProjectUsersService;
 import com.example.reminderproject.service.TaskService;
@@ -12,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/{projectId}/task")
@@ -28,7 +31,7 @@ public class TaskController {
 
     @PostMapping("/create")
     @Operation(summary = "Доступен только авторизованным пользователям")
-    public void TaskCreation(@PathVariable Long projectId, @RequestBody TaskDto taskDto) {
+    public void taskCreation(@PathVariable Long projectId, @RequestBody TaskDto taskDto) {
         var currUser = userService.getCurrentUser();
         var project = projectService.getProjectById(projectId);
 
@@ -37,7 +40,7 @@ public class TaskController {
         }
 
         if (project.getUserId().equals(currUser.getId())) {
-            taskDto.setProject_id(project.getId());
+            taskDto.setProject(project);
             taskService.createTask(taskDto);
             LOGGER.info(String.format("%s -> Создал новый таск (%s)", currUser.getUsername(), taskDto.getTitle()));
             LOGGER.info(String.format("content (%s)", taskDto.getContent()));
@@ -47,7 +50,7 @@ public class TaskController {
                     .anyMatch(proj -> proj.getUserId().equals(currUser.getId()));
 
             if (isMember) {
-                taskDto.setProject_id(project.getId());
+                taskDto.setProject(project);
                 taskService.createTask(taskDto);
                 LOGGER.info(String.format("%s -> Создал новый таск (%s)", currUser.getUsername(), taskDto.getTitle()));
 
@@ -55,5 +58,12 @@ public class TaskController {
                 throw new UserNotAllowedToThisProjectException(currUser.getUsername());
             }
         }
+    }
+
+    @GetMapping("/show")
+    @Operation(summary = "Доступен только авторизованным пользователям")
+    public List<TaskDto> projectTaskList(@PathVariable Long projectId) {
+
+        return taskService.getTasksByProjectId(projectId);
     }
 }

@@ -12,6 +12,7 @@ public interface TaskService {
     Task editTask(Long task_id);
     List<Task> getTaskByStatus(Status taskStatus);
     Task getTaskByTitle();
-    List<Task> getByProjectId(Long projectId);
+    List<TaskDto> getTasksByProjectId(Long projectId);
 
+    List<Long> getTasksId(List<Task> tasks);
 }

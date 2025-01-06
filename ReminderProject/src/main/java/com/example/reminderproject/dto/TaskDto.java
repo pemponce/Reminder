@@ -1,14 +1,17 @@
 package com.example.reminderproject.dto;
 
+import com.example.reminderproject.model.Project;
 import com.example.reminderproject.model.Status;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Lob;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
+@Builder
 public class TaskDto {
 
     @Schema(title = "Заголовок")
@@ -20,7 +23,7 @@ public class TaskDto {
     private String content;
     private String attachmentPath = "ReminderProject/data/";
     private String author;
-    private Long project_id;
+    private Project project;
     @Schema(title = "Статус задачи")
     private Status status;
 

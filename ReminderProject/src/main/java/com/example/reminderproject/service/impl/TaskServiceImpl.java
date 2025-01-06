@@ -1,6 +1,7 @@
 package com.example.reminderproject.service.impl;
 
 import com.example.reminderproject.dto.TaskDto;
+import com.example.reminderproject.mapper.TaskMapper;
 import com.example.reminderproject.model.Status;
 import com.example.reminderproject.model.Tag;
 import com.example.reminderproject.model.Task;
@@ -11,7 +12,9 @@ import com.example.reminderproject.service.TaskService;
 import com.example.reminderproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -21,8 +24,10 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final UserService userService;
     private final TagRepository tagRepository;
+    private final TaskMapper taskMapper;
 
     @Override
+    @Transactional
     public void createTask(TaskDto taskDto) {
         var user = userService.getCurrentUser();
         taskDto.setAuthor(user.getUsername());
@@ -35,7 +40,7 @@ public class TaskServiceImpl implements TaskService {
                 .attachmentPath(taskDto.getAttachmentPath())
                 .content(taskDto.getContent())
                 .author(taskDto.getAuthor())
-                .project_id(taskDto.getProject_id())
+                .project(taskDto.getProject())
                 .tags(tags)
                 .build();
 
@@ -66,7 +71,26 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getByProjectId(Long projectId) {
-        return null;
+    public List<TaskDto> getTasksByProjectId(Long projectId) {
+        List<TaskDto> res = new ArrayList<>();
+        int i = 0;
+
+        for (Task task: taskRepository.getTasksByProject_id(projectId)) {
+             res.add(taskMapper.toTaskDto(task));
+             i++;
+        }
+
+        System.out.println(i);
+        return res;
+    }
+
+    @Override
+    public List<Long> getTasksId(List<Task> tasks) {
+        List<Long> ids = new ArrayList<>();
+
+        for (Task task:tasks) {
+            ids.add(task.getId());
+        }
+        return ids;
     }
 }

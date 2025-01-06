@@ -1,10 +1,12 @@
 package com.example.reminderproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import java.util.List;
 
@@ -19,9 +21,12 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long project_id;
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
     private String title;
-    @Lob
+
+    @Column(columnDefinition = "TEXT")
     private String content;
     private String attachmentPath;
     private String author;
@@ -31,5 +36,6 @@ public class Task {
 
     @OneToMany
     @JoinColumn(name = "task_id")
+    @JsonIgnore
     private List<Tag> tags;
 }
