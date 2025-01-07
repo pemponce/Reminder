@@ -25,4 +25,12 @@ public class Tag {
 
     private String tagName;
     private String color;
+
+    @Override
+    public String toString() {
+        return "{id=" + id + ",\n" +
+                " project='" + project.getProjectName() + "',\n" +
+                " tagName='" + tagName + "',\n" +
+                " color='" + color + "'}";
+    }
 }

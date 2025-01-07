@@ -49,6 +49,7 @@ public class ProjectServiceImpl implements ProjectService {
             Project finalProject = project;
             List<Tag> tags = projectDto.getTags().stream()
                     .map(tagDto -> Tag.builder()
+                            .project(tagDto.getProject())
                             .tagName(tagDto.getTagName())
                             .color(tagDto.getColor())
                             .project(finalProject)

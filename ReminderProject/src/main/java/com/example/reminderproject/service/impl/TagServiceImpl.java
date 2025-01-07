@@ -1,11 +1,15 @@
 package com.example.reminderproject.service.impl;
 
+import com.example.reminderproject.dto.TagDto;
+import com.example.reminderproject.mapper.TagMapper;
+import com.example.reminderproject.model.Project;
 import com.example.reminderproject.model.Tag;
 import com.example.reminderproject.repository.TagRepository;
 import com.example.reminderproject.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -13,6 +17,7 @@ import java.util.List;
 public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
+    private final TagMapper tagMapper;
 
     @Override
     public void save(Tag tag) {
@@ -36,5 +41,17 @@ public class TagServiceImpl implements TagService {
                 .color(tag.getColor())
                 .project(tag.getProject())
                 .build());
+    }
+
+    @Override
+    public List<TagDto> getAllAllowedProjectTags(Project project) {
+
+        List<TagDto> tagsDto = new ArrayList<>();
+
+        for (Tag tag: tagRepository.getTagsByProject(project)) {
+            tagsDto.add(tagMapper.toTagDto(tag));
+        }
+
+        return tagsDto;
     }
 }
