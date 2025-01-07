@@ -14,7 +14,6 @@ public class TagMapperImpl implements TagMapper {
 
         if (tag != null) {
             return TagDto.builder()
-                    .projectName(tag.getProject().getProjectName())
                     .tagName(tag.getTagName())
                     .tagColor(tag.getColor())
                     .build();

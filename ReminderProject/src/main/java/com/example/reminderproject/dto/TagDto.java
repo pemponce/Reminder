@@ -7,7 +7,6 @@ import lombok.Data;
 @Data
 @Builder
 public class TagDto {
-        private String projectName;
         private String tagName;
         private String tagColor;
 }
