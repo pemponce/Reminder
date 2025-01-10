@@ -12,4 +12,5 @@ public interface TagService {
     void delete(Tag tag);
     void edit(Tag tag);
     List<TagDto> getAllAllowedProjectTags(Project project);
+    List<Long> getAllAllowedProjectTagsId(Project project);
 }

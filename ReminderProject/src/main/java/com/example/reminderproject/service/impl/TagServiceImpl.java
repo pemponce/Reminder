@@ -54,4 +54,15 @@ public class TagServiceImpl implements TagService {
 
         return tagsDto;
     }
+
+    @Override
+    public List<Long> getAllAllowedProjectTagsId(Project project) {
+        List<Long> tagsId = new ArrayList<>();
+
+        for (Tag tag: tagRepository.getTagsByProject(project)) {
+            tagsId.add(tag.getId());
+        }
+
+        return tagsId;
+    }
 }
