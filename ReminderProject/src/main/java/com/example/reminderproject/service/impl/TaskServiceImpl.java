@@ -8,6 +8,7 @@ import com.example.reminderproject.model.Task;
 import com.example.reminderproject.model.User;
 import com.example.reminderproject.repository.TagRepository;
 import com.example.reminderproject.repository.TaskRepository;
+import com.example.reminderproject.service.TagService;
 import com.example.reminderproject.service.TaskService;
 import com.example.reminderproject.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import java.util.List;
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
+    private final TagService tagService;
     private final UserService userService;
     private final TagRepository tagRepository;
     private final TaskMapper taskMapper;
@@ -32,7 +34,18 @@ public class TaskServiceImpl implements TaskService {
         var user = userService.getCurrentUser();
         taskDto.setAuthor(user.getUsername());
 
-        List<Tag> tags = tagRepository.findAllById(taskDto.getTagIds());
+        List<Long> allowedTags = tagService.getAllAllowedProjectTagsId(taskDto.getProject());
+
+        List<Long> requestedTagIds = taskDto.getTagIds();
+        List<Long> invalidTagIds = requestedTagIds.stream()
+                .filter(tagId -> !allowedTags.contains(tagId))
+                .toList();
+
+        if (!invalidTagIds.isEmpty()) {
+            throw new IllegalArgumentException("Недопустимые теги для проекта: " + invalidTagIds);
+        }
+
+        List<Tag> tags = tagRepository.findAllById(requestedTagIds);
 
         Task task = Task.builder()
                 .title(taskDto.getTitle())

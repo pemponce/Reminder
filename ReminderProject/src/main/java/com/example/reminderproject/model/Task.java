@@ -34,8 +34,11 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @OneToMany
-    @JoinColumn(name = "task_id")
-    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "task_tags",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
     private List<Tag> tags;
 }
