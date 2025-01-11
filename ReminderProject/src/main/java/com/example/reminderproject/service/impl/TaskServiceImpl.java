@@ -67,10 +67,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task editTask(Long task_id) {
-        var task = taskRepository.getTaskById(task_id);
-        task.setContent(task.getContent() + "");
-        return null;
+    public void editTask(Task task) {
+
+        taskRepository.save(task);
     }
 
     @Override
@@ -88,9 +87,9 @@ public class TaskServiceImpl implements TaskService {
         List<TaskDto> res = new ArrayList<>();
         int i = 0;
 
-        for (Task task: taskRepository.getTasksByProject_id(projectId)) {
-             res.add(taskMapper.toTaskDto(task));
-             i++;
+        for (Task task : taskRepository.getTasksByProject_id(projectId)) {
+            res.add(taskMapper.toTaskDto(task));
+            i++;
         }
 
         System.out.println(i);
@@ -101,7 +100,7 @@ public class TaskServiceImpl implements TaskService {
     public List<Long> getTasksId(List<Task> tasks) {
         List<Long> ids = new ArrayList<>();
 
-        for (Task task:tasks) {
+        for (Task task : tasks) {
             ids.add(task.getId());
         }
         return ids;

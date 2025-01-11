@@ -9,7 +9,7 @@ import java.util.List;
 public interface TaskService {
     void createTask(TaskDto task);
     Task getTaskById(Long id);
-    Task editTask(Long task_id);
+    void editTask(Task task);
     List<Task> getTaskByStatus(Status taskStatus);
     Task getTaskByTitle();
     List<TaskDto> getTasksByProjectId(Long projectId);

@@ -3,7 +3,7 @@ package com.example.reminderproject.controller;
 import com.example.reminderproject.dto.TaskDto;
 import com.example.reminderproject.exception.ProjectNotFoundException;
 import com.example.reminderproject.exception.UserNotAllowedToThisProjectException;
-import com.example.reminderproject.model.Task;
+import com.example.reminderproject.mapper.TaskMapper;
 import com.example.reminderproject.service.ProjectService;
 import com.example.reminderproject.service.ProjectUsersService;
 import com.example.reminderproject.service.TaskService;
@@ -24,6 +24,7 @@ public class TaskController {
     private final static Logger LOGGER= LoggerFactory.getLogger(TaskController.class);
 
     private final TaskService taskService;
+    private final TaskMapper taskMapper;
     private final UserService userService;
     private final ProjectService projectService;
     private final ProjectUsersService projectUsersService;
@@ -57,6 +58,23 @@ public class TaskController {
             } else {
                 throw new UserNotAllowedToThisProjectException(currUser.getUsername());
             }
+        }
+    }
+
+    @PostMapping("/{task_id}/edit")
+    @Operation(summary = "Доступен только авторизованным пользователям")
+    public void taskEdit(@PathVariable Long task_id, @PathVariable Long projectId, @RequestBody TaskDto taskDto) {
+        var currUser = userService.getCurrentUser();
+        var project = projectService.getProjectById(projectId);
+        var task = taskService.getTaskById(task_id);
+
+        if (project.getUserId().equals(currUser.getId())) {
+            taskMapper.apply(task, taskDto);
+            taskService.editTask(task);
+
+            LOGGER.info(String.format("%s -> Отредактировал новый таск (%s)", currUser.getUsername(), taskService.getTaskById(task_id).getTitle()));
+        }  else {
+            throw new UserNotAllowedToThisProjectException(currUser.getUsername());
         }
     }
 

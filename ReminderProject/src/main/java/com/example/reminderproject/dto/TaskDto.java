@@ -21,6 +21,8 @@ public class TaskDto {
     @Schema(title = "Описание")
     @Lob
     private String content;
+
+    @Builder.Default
     private String attachmentPath = "ReminderProject/data/";
     private String author;
     private Project project;

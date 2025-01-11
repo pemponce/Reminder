@@ -5,5 +5,6 @@ import com.example.reminderproject.model.Task;
 
 public interface TaskMapper {
     TaskDto toTaskDto(Task task);
+    void apply(Task task, TaskDto taskDto);
 
 }
