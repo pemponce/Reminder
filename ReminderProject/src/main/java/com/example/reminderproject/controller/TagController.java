@@ -32,5 +32,4 @@ public class TagController {
 
         return tagService.getAllAllowedProjectTagsId(projectService.getProjectById(projectId));
     }
-
 }
