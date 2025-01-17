@@ -19,4 +19,6 @@ public class Friends {
 
     @Column(name = "friend_id", nullable = false)
     private Long friendId;
+
+    private boolean requestAccepted;
 }
