@@ -5,6 +5,7 @@ import com.example.reminderproject.exception.UserAlreadyExistException;
 import com.example.reminderproject.exception.UserNotFoundException;
 import com.example.reminderproject.model.User;
 import com.example.reminderproject.repository.UserRepository;
+import com.example.reminderproject.service.FriendsService;
 import com.example.reminderproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service

@@ -30,15 +30,35 @@ public class FriendsServiceImpl implements FriendsService {
 
         var currUser = userService.getCurrentUser();
         List<UserDto> usersDto = new ArrayList<>();
-
         if (friendsRepository.findFriendsByUserId(currUser.getId()).size() > 0) {
+            System.out.println(friendsRepository.findFriendsByUserId(currUser.getId()));
 
-            List<Long> friendsId = friendsRepository.findFriendsByUserId(currUser.getId());
-            for (Long id : friendsId) {
-                usersDto.add(userMapper.toUserDto(userService.getUserById(id)));
+            List<Friends> friends = friendsRepository.findFriendsByUserId(currUser.getId());
+            for (Friends fr : friends) {
+                usersDto.add(userMapper.toUserDto(userService.getUserById(fr.getFriendId())));
             }
         } else {
-            throw new UserHaveNoFriendsException(currUser.getUsername());
+            systemMessage("У вас нет друзей");
+        }
+
+        return usersDto;
+    }
+
+    @Override
+    public List<UserDto> getAllFriendsRequests(Long currentUserId) {
+        var currUser = userService.getCurrentUser();
+
+        List<UserDto> usersDto = new ArrayList<>();
+
+        if (friendsRepository.findFriendsByUserIdAndRequestAcceptedFalse(currentUserId).size() > 0) {
+            System.out.println(friendsRepository.findFriendsByUserIdAndRequestAcceptedFalse(currentUserId));
+            List<Friends> friendsRequest = friendsRepository.findFriendsByUserIdAndRequestAcceptedFalse(currentUserId);
+
+            for (Friends fr : friendsRequest) {
+                usersDto.add(userMapper.toUserDto(userService.getUserById(fr.getFriendId())));
+            }
+        } else {
+            systemMessage("У вас нет заявок в друзья");
         }
 
         return usersDto;
@@ -64,8 +84,7 @@ public class FriendsServiceImpl implements FriendsService {
 
         if (Objects.equals(friendId, currUser.getId())) {
             throw new UserAddHimselfException(currUser.getUsername());
-        }
-        else if (friendsRepository.getFriendsByUserIdAndFriendId(currUser.getId(), friendId) != null) {
+        } else if (friendsRepository.getFriendsByUserIdAndFriendId(currUser.getId(), friendId) != null) {
             throw new UserAlreadySendRequestToFriendException(userService.getUserById(friendId).getUsername());
         }
 
@@ -86,5 +105,10 @@ public class FriendsServiceImpl implements FriendsService {
         request.setRequestAccepted(response);
         friendsRepository.save(request);
 
+    }
+
+    @Override
+    public String systemMessage(String text) {
+        return text;
     }
 }
