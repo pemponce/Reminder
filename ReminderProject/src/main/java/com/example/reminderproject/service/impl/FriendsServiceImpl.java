@@ -10,6 +10,7 @@ import com.example.reminderproject.model.User;
 import com.example.reminderproject.repository.FriendsRepository;
 import com.example.reminderproject.service.FriendsService;
 import com.example.reminderproject.service.UserService;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -117,12 +118,19 @@ public class FriendsServiceImpl implements FriendsService {
 
     @Override
     public void acceptRequest(Long currUserId, Long friendId, boolean response) {
+        Friends request = null;
+        try {
+            if (friendsRepository.getFriendsByUserIdAndFriendIdAndRequestAcceptedFalse(currUserId, friendId) == null) {
+                request = friendsRepository.getFriendsByUserIdAndFriendIdAndRequestAcceptedFalse(friendId, currUserId);
+            } else {
+                request = friendsRepository.getFriendsByUserIdAndFriendIdAndRequestAcceptedFalse(currUserId, friendId);
+            }
 
-        var request = friendsRepository.getFriendsByUserIdAndFriendId(currUserId, friendId);
-
-        request.setRequestAccepted(response);
-        friendsRepository.save(request);
-
+            request.setRequestAccepted(response);
+            friendsRepository.save(request);
+        } catch (Exception e) {
+            throw new RuntimeException(e + "Не найдены заявки в друзья, или вы уже приняли эту заявку.");
+        }
     }
 
     @Override

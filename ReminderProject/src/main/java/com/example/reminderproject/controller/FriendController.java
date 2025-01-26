@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/friend")
@@ -39,5 +40,14 @@ public class FriendController {
         var currUser = userService.getCurrentUser();
 
         return friendsService.getAllFriendsRequests(currUser.getId());
+    }
+
+    @PostMapping("/accept/{friendId}")
+    public void addRequest(@PathVariable Long friendId, @RequestBody String response) {
+        var currUser = userService.getCurrentUser();
+        System.out.println(response);
+
+        boolean status = response.contains("0");
+        friendsService.acceptRequest(currUser.getId(), friendId, status);
     }
 }
