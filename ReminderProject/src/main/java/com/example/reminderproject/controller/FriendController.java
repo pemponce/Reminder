@@ -27,7 +27,14 @@ public class FriendController {
         return String.format("Вы отправили приглашение в друзья пользователю %s", userService.getUserById(friendId).getUsername());
     }
 
-    @GetMapping("/requests")
+    @GetMapping("/yours_requests")
+    public List<UserDto> getAllUserRequests() {
+        var currUser = userService.getCurrentUser();
+
+        return friendsService.getAllUserRequests(currUser.getId());
+    }
+
+    @GetMapping("/requests_to_you")
     public List<UserDto> getAllFriendsRequests() {
         var currUser = userService.getCurrentUser();
 

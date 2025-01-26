@@ -45,9 +45,7 @@ public class FriendsServiceImpl implements FriendsService {
     }
 
     @Override
-    public List<UserDto> getAllFriendsRequests(Long currentUserId) {
-        var currUser = userService.getCurrentUser();
-
+    public List<UserDto> getAllUserRequests(Long currentUserId) {
         List<UserDto> usersDto = new ArrayList<>();
 
         if (friendsRepository.findFriendsByUserIdAndRequestAcceptedFalse(currentUserId).size() > 0) {
@@ -63,6 +61,26 @@ public class FriendsServiceImpl implements FriendsService {
 
         return usersDto;
     }
+
+    @Override
+    public List<UserDto> getAllFriendsRequests(Long currentUserId) {
+        List<UserDto> usersDto = new ArrayList<>();
+
+        if (friendsRepository.findFriendsByFriendIdAndRequestAcceptedFalse(currentUserId).size() > 0) {
+            System.out.println(friendsRepository.findFriendsByFriendIdAndRequestAcceptedFalse(currentUserId));
+            List<Friends> friendsRequest = friendsRepository.findFriendsByFriendIdAndRequestAcceptedFalse(currentUserId);
+
+            for (Friends fr : friendsRequest) {
+                usersDto.add(userMapper.toUserDto(userService.getUserById(fr.getUserId())));
+            }
+        } else {
+            systemMessage("У вас нет заявок в друзья");
+        }
+
+        return usersDto;
+    }
+
+
 
     @Override
     public User findFriend(Long friendId) {
