@@ -22,4 +22,5 @@ public class ProjectUsers {
 
     private Long projectId;
     private Long userId;
+    private ProjectRole userRole;
 }

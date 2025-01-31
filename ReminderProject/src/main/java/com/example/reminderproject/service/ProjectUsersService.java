@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface ProjectUsersService {
     void create(ProjectUsers projectUsers);
+    void addUser(String username, Long projectId);
     List<ProjectUsers> getProjUsersByProjId(Long projId);
 }

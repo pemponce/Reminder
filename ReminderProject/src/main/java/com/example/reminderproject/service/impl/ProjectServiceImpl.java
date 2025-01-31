@@ -5,6 +5,7 @@ import com.example.reminderproject.exception.ProjectNameAlreadyExistException;
 import com.example.reminderproject.exception.ProjectNotFoundException;
 import com.example.reminderproject.exception.UserZeroProjectsException;
 import com.example.reminderproject.model.Project;
+import com.example.reminderproject.model.ProjectRole;
 import com.example.reminderproject.model.ProjectUsers;
 import com.example.reminderproject.model.Tag;
 import com.example.reminderproject.repository.ProjectRepository;
@@ -29,21 +30,27 @@ public class ProjectServiceImpl implements ProjectService {
     private final static Logger LOGGER = LoggerFactory.getLogger(ProjectServiceImpl.class);
 
     private final ProjectRepository projectRepository;
+    private final ProjectUsersService projectUsersService;
     private final TagService tagService;
     private final UserService userService;
 
     public void create(ProjectDto projectDto) {
-        // Проверка, существует ли проект с таким именем
-        if (findProjectByProjectName(projectDto.getProjectName()).isPresent()) {
-            throw new ProjectNameAlreadyExistException(projectDto.getProjectName());
-        }
+        var currUser = userService.getCurrentUser();
 
         Project project = Project.builder()
                 .projectName(projectDto.getProjectName())
-                .userId(userService.getCurrentUser().getId())
+                .userId(currUser.getId())
                 .build();
 
         project = projectRepository.save(project);
+
+        ProjectUsers projectUsers = ProjectUsers.builder()
+                .userId(currUser.getId())
+                .projectId(project.getId())
+                .userRole(ProjectRole.AUTHOR)
+                .build();
+
+        projectUsersService.create(projectUsers);
 
         if (projectDto.getTags() != null && !projectDto.getTags().isEmpty()) {
             Project finalProject = project;

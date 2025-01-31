@@ -20,6 +20,11 @@ public class ProjectUsersServiceImpl implements ProjectUsersService {
     }
 
     @Override
+    public void addUser(String username, Long projectId) {
+
+    }
+
+    @Override
     public List<ProjectUsers> getProjUsersByProjId(Long projId) {
         return projectUsersRepository.getProjectUsersByProjectId(projId);
     }
