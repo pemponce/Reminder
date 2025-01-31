@@ -10,4 +10,5 @@ import java.util.List;
 public interface ProjectUsersRepository extends JpaRepository<ProjectUsers, Long> {
 
     List<ProjectUsers> getProjectUsersByProjectId(Long projId);
+    ProjectUsers getProjectUsersByUserIdAndProjectId(Long userId, Long projId);
 }

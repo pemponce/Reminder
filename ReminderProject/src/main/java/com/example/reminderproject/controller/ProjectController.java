@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 public class ProjectController {
     private final ProjectService projectService;
-
+    private final ProjectUsersService projectUsersService;
     @PostMapping("/create")
     public void create(@RequestBody ProjectDto projectDto) {
         projectService.create(projectDto);
