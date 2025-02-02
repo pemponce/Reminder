@@ -38,6 +38,4 @@ public class UserController {
         LOGGER.info(String.format("Пользователь %s -> просматривает своих друзей", userService.getCurrentUser().getUsername()));
         return friendsService.findFriends();
     }
-
-
 }

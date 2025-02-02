@@ -1,6 +1,8 @@
 package com.example.reminderproject.controller;
 
+import com.example.reminderproject.dto.ProjectRoleRequest;
 import com.example.reminderproject.dto.TaskDto;
+import com.example.reminderproject.model.ProjectRole;
 import com.example.reminderproject.service.ProjectUsersService;
 import com.example.reminderproject.service.TaskService;
 import com.example.reminderproject.service.UserService;
@@ -29,5 +31,11 @@ public class ProjectPageController {
     public void addUserToProject(@PathVariable Long projectId, @PathVariable Long userId) {
 
         projectUsersService.addUser(userService.getUserById(userId).getUsername(), userId, projectId);
+    }
+
+    @PostMapping("/edit_user_role/{userId}")
+    public void editUserRole(@PathVariable Long userId,@PathVariable Long projectId, @RequestBody ProjectRoleRequest projectRole) {
+
+        projectUsersService.changeProjectUserRole(userId, projectId, projectRole.getProjectRole());
     }
 }

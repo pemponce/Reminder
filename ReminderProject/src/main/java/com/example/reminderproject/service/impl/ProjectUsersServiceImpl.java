@@ -3,6 +3,7 @@ package com.example.reminderproject.service.impl;
 import com.example.reminderproject.exception.UserCannotBeAddedToProjectException;
 import com.example.reminderproject.exception.UserNotAllowedToThisProjectException;
 import com.example.reminderproject.exception.UserNotAuthorException;
+import com.example.reminderproject.exception.UserNotFoundException;
 import com.example.reminderproject.model.ProjectRole;
 import com.example.reminderproject.model.ProjectUsers;
 import com.example.reminderproject.repository.ProjectUsersRepository;
@@ -55,9 +56,27 @@ public class ProjectUsersServiceImpl implements ProjectUsersService {
     @Override
     public ProjectUsers getProjUsersByUserIdAndProjId(Long userId, Long projId) {
 
-        if(projectUsersRepository.getProjectUsersByUserIdAndProjectId(userId, projId) == null) {
+        if (projectUsersRepository.getProjectUsersByUserIdAndProjectId(userId, projId) == null) {
             throw new UserNotAllowedToThisProjectException(userService.getUserById(userId).getUsername());
         }
         return projectUsersRepository.getProjectUsersByUserIdAndProjectId(userId, projId);
+    }
+
+    @Override
+    public void changeProjectUserRole(Long userId, Long projId, ProjectRole projectRole) {
+        var currUser = userService.getCurrentUser();
+        if (getProjUsersByUserIdAndProjId(currUser.getId(), projId).getUserRole().equals(ProjectRole.AUTHOR)) {
+            if (getProjUsersByUserIdAndProjId(userId, projId) != null) {
+
+                var targetToEdit = getProjUsersByUserIdAndProjId(userId, projId);
+
+                targetToEdit.setUserRole(projectRole);
+                projectUsersRepository.save(targetToEdit);
+            } else {
+                throw new UserNotFoundException(userId);
+            }
+        } else {
+            throw new UserNotAuthorException(currUser.getUsername());
+        }
     }
 }
