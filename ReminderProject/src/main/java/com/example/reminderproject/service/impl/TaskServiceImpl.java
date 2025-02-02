@@ -1,13 +1,16 @@
 package com.example.reminderproject.service.impl;
 
 import com.example.reminderproject.dto.TaskDto;
+import com.example.reminderproject.exception.UserNotAllowedToThisProjectException;
 import com.example.reminderproject.mapper.TaskMapper;
 import com.example.reminderproject.model.Status;
 import com.example.reminderproject.model.Tag;
 import com.example.reminderproject.model.Task;
 import com.example.reminderproject.model.User;
+import com.example.reminderproject.repository.ProjectUsersRepository;
 import com.example.reminderproject.repository.TagRepository;
 import com.example.reminderproject.repository.TaskRepository;
+import com.example.reminderproject.service.ProjectUsersService;
 import com.example.reminderproject.service.TagService;
 import com.example.reminderproject.service.TaskService;
 import com.example.reminderproject.service.UserService;
@@ -27,6 +30,7 @@ public class TaskServiceImpl implements TaskService {
     private final UserService userService;
     private final TagRepository tagRepository;
     private final TaskMapper taskMapper;
+    private final ProjectUsersRepository projectUsersRepository;
 
     @Override
     @Transactional
@@ -84,15 +88,18 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskDto> getTasksByProjectId(Long projectId) {
+        var currUser = userService.getCurrentUser();
         List<TaskDto> res = new ArrayList<>();
-        int i = 0;
+        if(projectUsersRepository.getProjectUsersByUserIdAndProjectId(currUser.getId(), projectId) != null) {
 
-        for (Task task : taskRepository.getTasksByProject_id(projectId)) {
-            res.add(taskMapper.toTaskDto(task));
-            i++;
+            for (Task task : taskRepository.getTasksByProject_id(projectId)) {
+                res.add(taskMapper.toTaskDto(task));
+            }
+        } else {
+            throw new UserNotAllowedToThisProjectException(currUser.getUsername());
         }
 
-        System.out.println(i);
+
         return res;
     }
 
