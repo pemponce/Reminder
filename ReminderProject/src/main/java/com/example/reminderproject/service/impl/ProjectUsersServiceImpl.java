@@ -1,6 +1,7 @@
 package com.example.reminderproject.service.impl;
 
 import com.example.reminderproject.exception.UserCannotBeAddedToProjectException;
+import com.example.reminderproject.exception.UserNotAllowedToThisProjectException;
 import com.example.reminderproject.exception.UserNotAuthorException;
 import com.example.reminderproject.model.ProjectRole;
 import com.example.reminderproject.model.ProjectUsers;
@@ -49,5 +50,14 @@ public class ProjectUsersServiceImpl implements ProjectUsersService {
     @Override
     public List<ProjectUsers> getProjUsersByProjId(Long projId) {
         return projectUsersRepository.getProjectUsersByProjectId(projId);
+    }
+
+    @Override
+    public ProjectUsers getProjUsersByUserIdAndProjId(Long userId, Long projId) {
+
+        if(projectUsersRepository.getProjectUsersByUserIdAndProjectId(userId, projId) == null) {
+            throw new UserNotAllowedToThisProjectException(userService.getUserById(userId).getUsername());
+        }
+        return projectUsersRepository.getProjectUsersByUserIdAndProjectId(userId, projId);
     }
 }

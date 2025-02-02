@@ -4,6 +4,7 @@ import com.example.reminderproject.dto.TaskDto;
 import com.example.reminderproject.exception.ProjectNotFoundException;
 import com.example.reminderproject.exception.UserNotAllowedToThisProjectException;
 import com.example.reminderproject.mapper.TaskMapper;
+import com.example.reminderproject.model.ProjectRole;
 import com.example.reminderproject.service.ProjectService;
 import com.example.reminderproject.service.ProjectUsersService;
 import com.example.reminderproject.service.TaskService;
@@ -67,8 +68,11 @@ public class TaskController {
         var currUser = userService.getCurrentUser();
         var project = projectService.getProjectById(projectId);
         var task = taskService.getTaskById(task_id);
+        var projUser = projectUsersService.getProjUsersByUserIdAndProjId(currUser.getId(), projectId);
 
-        if (project.getUserId().equals(currUser.getId())) {
+        if (project.getUserId().equals(currUser.getId()) || (projUser.getUserRole().equals(ProjectRole.AUTHOR) ||
+                projUser.getUserRole().equals(ProjectRole.CMD))) {
+
             taskMapper.apply(task, taskDto);
             taskService.editTask(task);
 

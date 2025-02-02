@@ -8,4 +8,5 @@ public interface ProjectUsersService {
     void create(ProjectUsers projectUsers);
     void addUser(String username, Long crewmateId, Long projectId);
     List<ProjectUsers> getProjUsersByProjId(Long projId);
+    ProjectUsers getProjUsersByUserIdAndProjId(Long userId, Long projId);
 }
