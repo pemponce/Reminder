@@ -59,6 +59,7 @@ public class TaskServiceImpl implements TaskService {
                 .author(taskDto.getAuthor())
                 .project(taskDto.getProject())
                 .tags(tags)
+                .deadline(taskDto.getDeadline())
                 .build();
 
 
