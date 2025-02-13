@@ -15,6 +15,7 @@ import com.example.reminderproject.service.TagService;
 import com.example.reminderproject.service.TaskService;
 import com.example.reminderproject.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,8 +74,20 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void editTask(Task task) {
-
         taskRepository.save(task);
+    }
+
+    @Override
+    @Transactional
+    @Scheduled(fixedDelay = 5000)
+    public void checkIfTasksTimeOver() {
+        List<Task> expiredTasks = taskRepository.findAll()
+                .stream()
+                .filter(Task::isTimeOver)
+                .peek(task -> task.setStatus(Status.TIME_IS_OVER))
+                .toList();
+
+        taskRepository.saveAll(expiredTasks);
     }
 
     @Override

@@ -3,8 +3,10 @@ package com.example.reminderproject;
 import com.example.reminderproject.config.security.SecurityConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 public class ReminderProjectApplication {
 
     public static void main(String[] args) {

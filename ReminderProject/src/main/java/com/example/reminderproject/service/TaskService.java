@@ -10,9 +10,9 @@ public interface TaskService {
     void createTask(TaskDto task);
     Task getTaskById(Long id);
     void editTask(Task task);
+    void checkIfTasksTimeOver();
     List<Task> getTaskByStatus(Status taskStatus);
     Task getTaskByTitle();
     List<TaskDto> getTasksByProjectId(Long projectId);
-
     List<Long> getTasksId(List<Task> tasks);
 }
