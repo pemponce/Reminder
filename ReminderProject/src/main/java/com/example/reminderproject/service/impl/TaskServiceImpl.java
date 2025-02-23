@@ -3,10 +3,7 @@ package com.example.reminderproject.service.impl;
 import com.example.reminderproject.dto.TaskDto;
 import com.example.reminderproject.exception.UserNotAllowedToThisProjectException;
 import com.example.reminderproject.mapper.TaskMapper;
-import com.example.reminderproject.model.Status;
-import com.example.reminderproject.model.Tag;
-import com.example.reminderproject.model.Task;
-import com.example.reminderproject.model.User;
+import com.example.reminderproject.model.*;
 import com.example.reminderproject.repository.ProjectUsersRepository;
 import com.example.reminderproject.repository.TagRepository;
 import com.example.reminderproject.repository.TaskRepository;
@@ -78,21 +75,25 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDto> getTaskByStatus(Long projId, Status taskStatus) {
+    public List<TaskDto> getTasksByStatus(Status taskStatus) {
 
         List<TaskDto> taskDtos = new ArrayList<>(taskRepository.findTasksByStatus(taskStatus)
                 .stream()
                 .map(taskMapper::toTaskDto)
                 .toList());
 
-        taskDtos.removeIf(t -> projectUsersService.getProjUsersByUserIdAndProjId(userService.getCurrentUser().getId(), projId) == null
-                || !Objects.equals(t.getProject().getId(), projId));
+        List<ProjectUsers> projs = projectUsersService.getProjUsersByUser(userService.getCurrentUser().getId());
 
+        for (ProjectUsers p: projs) {
+            taskDtos.removeIf(t -> p.getProjectId().longValue() != t.getProject().getId().longValue());
+        }
+
+        int i = 0;
         return taskDtos;
     }
 
     @Override
-    public Task getTaskByTitle() {
+    public Task getTasksByTitle(String title) {
         return null;
     }
 

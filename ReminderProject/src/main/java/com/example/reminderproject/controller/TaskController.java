@@ -65,11 +65,7 @@ public class TaskController {
         }
     }
 
-    @GetMapping("/findTaskByStatus")
-    @Operation(summary = "Доступен только авторизованным пользователям")
-    public List<TaskDto> searchTaskByStatus(@PathVariable Long projectId, @RequestBody StatusRequestDto status) {
-        return taskService.getTaskByStatus(projectId, Status.valueOf(status.getStatus()));
-    }
+
 
     @PostMapping("/{task_id}/edit")
     @Operation(summary = "Доступен только авторизованным пользователям")

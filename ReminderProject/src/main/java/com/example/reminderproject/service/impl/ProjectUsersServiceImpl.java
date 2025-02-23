@@ -54,6 +54,11 @@ public class ProjectUsersServiceImpl implements ProjectUsersService {
     }
 
     @Override
+    public List<ProjectUsers> getProjUsersByUser(Long userId) {
+        return projectUsersRepository.getProjectUsersByUserId(userId);
+    }
+
+    @Override
     public ProjectUsers getProjUsersByUserIdAndProjId(Long userId, Long projId) {
 
         if (projectUsersRepository.getProjectUsersByUserIdAndProjectId(userId, projId) == null) {
