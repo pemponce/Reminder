@@ -5,6 +5,8 @@ import com.example.reminderproject.exception.ProjectNotFoundException;
 import com.example.reminderproject.exception.UserNotAllowedToThisProjectException;
 import com.example.reminderproject.mapper.TaskMapper;
 import com.example.reminderproject.model.ProjectRole;
+import com.example.reminderproject.model.Status;
+import com.example.reminderproject.model.StatusRequestDto;
 import com.example.reminderproject.service.ProjectService;
 import com.example.reminderproject.service.ProjectUsersService;
 import com.example.reminderproject.service.TaskService;
@@ -15,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -60,6 +63,12 @@ public class TaskController {
                 throw new UserNotAllowedToThisProjectException(currUser.getUsername());
             }
         }
+    }
+
+    @GetMapping("/findTaskByStatus")
+    @Operation(summary = "Доступен только авторизованным пользователям")
+    public List<TaskDto> searchTaskByStatus(@PathVariable Long projectId, @RequestBody StatusRequestDto status) {
+        return taskService.getTaskByStatus(projectId, Status.valueOf(status.getStatus()));
     }
 
     @PostMapping("/{task_id}/edit")

@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -32,6 +33,7 @@ public class TaskServiceImpl implements TaskService {
     private final TagRepository tagRepository;
     private final TaskMapper taskMapper;
     private final ProjectUsersRepository projectUsersRepository;
+    private final ProjectUsersService projectUsersService;
 
     @Override
     @Transactional
@@ -42,9 +44,7 @@ public class TaskServiceImpl implements TaskService {
         List<Long> allowedTags = tagService.getAllAllowedProjectTagsId(taskDto.getProject());
 
         List<Long> requestedTagIds = taskDto.getTagIds();
-        List<Long> invalidTagIds = requestedTagIds.stream()
-                .filter(tagId -> !allowedTags.contains(tagId))
-                .toList();
+        List<Long> invalidTagIds = requestedTagIds.stream().filter(tagId -> !allowedTags.contains(tagId)).toList();
 
         if (!invalidTagIds.isEmpty()) {
             throw new IllegalArgumentException("Недопустимые теги для проекта: " + invalidTagIds);
@@ -52,16 +52,7 @@ public class TaskServiceImpl implements TaskService {
 
         List<Tag> tags = tagRepository.findAllById(requestedTagIds);
 
-        Task task = Task.builder()
-                .title(taskDto.getTitle())
-                .status(taskDto.getStatus())
-                .attachmentPath(taskDto.getAttachmentPath())
-                .content(taskDto.getContent())
-                .author(taskDto.getAuthor())
-                .project(taskDto.getProject())
-                .tags(tags)
-                .deadline(taskDto.getDeadline())
-                .build();
+        Task task = Task.builder().title(taskDto.getTitle()).status(taskDto.getStatus()).attachmentPath(taskDto.getAttachmentPath()).content(taskDto.getContent()).author(taskDto.getAuthor()).project(taskDto.getProject()).tags(tags).deadline(taskDto.getDeadline()).build();
 
 
         taskRepository.save(task);
@@ -81,18 +72,23 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     @Scheduled(fixedDelay = 5000)
     public void checkIfTasksTimeOver() {
-        List<Task> expiredTasks = taskRepository.findAll()
-                .stream()
-                .filter(Task::isTimeOver)
-                .peek(task -> task.setStatus(Status.TIME_IS_OVER))
-                .toList();
+        List<Task> expiredTasks = taskRepository.findAll().stream().filter(Task::isTimeOver).peek(task -> task.setStatus(Status.TIME_IS_OVER)).toList();
 
         taskRepository.saveAll(expiredTasks);
     }
 
     @Override
-    public List<Task> getTaskByStatus(Status taskStatus) {
-        return null;
+    public List<TaskDto> getTaskByStatus(Long projId, Status taskStatus) {
+
+        List<TaskDto> taskDtos = new ArrayList<>(taskRepository.findTasksByStatus(taskStatus)
+                .stream()
+                .map(taskMapper::toTaskDto)
+                .toList());
+
+        taskDtos.removeIf(t -> projectUsersService.getProjUsersByUserIdAndProjId(userService.getCurrentUser().getId(), projId) == null
+                || !Objects.equals(t.getProject().getId(), projId));
+
+        return taskDtos;
     }
 
     @Override
@@ -104,7 +100,7 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskDto> getTasksByProjectId(Long projectId) {
         var currUser = userService.getCurrentUser();
         List<TaskDto> res = new ArrayList<>();
-        if(projectUsersRepository.getProjectUsersByUserIdAndProjectId(currUser.getId(), projectId) != null) {
+        if (projectUsersRepository.getProjectUsersByUserIdAndProjectId(currUser.getId(), projectId) != null) {
 
             for (Task task : taskRepository.getTasksByProject_id(projectId)) {
                 res.add(taskMapper.toTaskDto(task));

@@ -11,7 +11,7 @@ public interface TaskService {
     Task getTaskById(Long id);
     void editTask(Task task);
     void checkIfTasksTimeOver();
-    List<Task> getTaskByStatus(Status taskStatus);
+    List<TaskDto> getTaskByStatus(Long projId, Status taskStatus);
     Task getTaskByTitle();
     List<TaskDto> getTasksByProjectId(Long projectId);
     List<Long> getTasksId(List<Task> tasks);
