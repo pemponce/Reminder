@@ -77,18 +77,18 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<TaskDto> getTasksByStatus(Status taskStatus) {
 
-        List<TaskDto> taskDtos = new ArrayList<>(taskRepository.findTasksByStatus(taskStatus)
-                .stream()
-                .map(taskMapper::toTaskDto)
-                .toList());
+        List<ProjectUsers> projs = new ArrayList<>(projectUsersService.getProjUsersByUser(userService.getCurrentUser().getId()));
 
-        List<ProjectUsers> projs = projectUsersService.getProjUsersByUser(userService.getCurrentUser().getId());
+        List<TaskDto> taskDtos = new ArrayList<>();
 
-        for (ProjectUsers p: projs) {
-            taskDtos.removeIf(t -> p.getProjectId().longValue() != t.getProject().getId().longValue());
+        for (ProjectUsers p : projs) {
+
+            taskDtos.addAll(taskRepository.findTasksByStatusAndProjectId(taskStatus, p.getProjectId())
+                    .stream()
+                    .map(taskMapper::toTaskDto)
+                    .toList());
         }
 
-        int i = 0;
         return taskDtos;
     }
 
