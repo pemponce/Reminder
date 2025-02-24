@@ -12,7 +12,7 @@ public interface TaskService {
     void editTask(Task task);
     void checkIfTasksTimeOver();
     List<TaskDto> getTasksByStatus( Status taskStatus);
-    Task getTasksByTitle(String title);
+    List<TaskDto> getTasksByTitle(String title);
     List<TaskDto> getTasksByProjectId(Long projectId);
     List<Long> getTasksId(List<Task> tasks);
 }

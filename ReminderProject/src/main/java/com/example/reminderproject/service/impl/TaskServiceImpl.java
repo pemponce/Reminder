@@ -93,8 +93,21 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task getTasksByTitle(String title) {
-        return null;
+    @Transactional
+    public List<TaskDto> getTasksByTitle(String title) {
+        List<ProjectUsers> projs = new ArrayList<>(projectUsersService.getProjUsersByUser(userService.getCurrentUser().getId()));
+
+        List<TaskDto> taskDtos = new ArrayList<>();
+
+        for (ProjectUsers p : projs) {
+
+            taskDtos.addAll(taskRepository.findTasksByTitleContainingAndProjectId(title, p.getProjectId())
+                    .stream()
+                    .map(taskMapper::toTaskDto)
+                    .toList());
+        }
+
+        return taskDtos;
     }
 
     @Override
