@@ -32,7 +32,9 @@ public class AuthServiceImpl implements AuthService {
                 signInRequest.getPassword()
         ));
 
-        UserDetails user = userService.userDetails().loadUserByUsername(signInRequest.getUsername());
+        UserDetails user = userService
+                .userDetails()
+                .loadUserByUsername(signInRequest.getUsername());
 
         var jwt = jwtService.generateToken(user);
         return new JwtAuthenticationResponse(jwt);
