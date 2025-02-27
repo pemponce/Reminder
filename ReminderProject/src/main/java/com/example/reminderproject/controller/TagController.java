@@ -1,6 +1,7 @@
 package com.example.reminderproject.controller;
 
 import com.example.reminderproject.dto.TagDto;
+import com.example.reminderproject.model.Tag;
 import com.example.reminderproject.service.ProjectService;
 import com.example.reminderproject.service.TagService;
 import com.example.reminderproject.service.UserService;
