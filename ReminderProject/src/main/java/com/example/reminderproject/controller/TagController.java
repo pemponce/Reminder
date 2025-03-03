@@ -22,7 +22,7 @@ public class TagController {
 
     @GetMapping("/{projectId}/project_tags")
     @Operation(summary = "Доступен только авторизованным пользователям")
-    public List<TagDto> getProjectTags(@PathVariable Long projectId) {
+    public List<Tag> getProjectTags(@PathVariable Long projectId) {
 
         return tagService.getAllAllowedProjectTags(projectService.getProjectById(projectId));
     }

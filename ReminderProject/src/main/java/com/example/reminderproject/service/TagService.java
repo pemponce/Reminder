@@ -11,6 +11,6 @@ public interface TagService {
     void saveAll(List<Tag> tags);
     void delete(Tag tag);
     void edit(Tag tag);
-    List<TagDto> getAllAllowedProjectTags(Project project);
+    List<Tag> getAllAllowedProjectTags(Project project);
     List<Long> getAllAllowedProjectTagsId(Project project);
 }

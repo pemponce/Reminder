@@ -44,15 +44,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<TagDto> getAllAllowedProjectTags(Project project) {
-
-        List<TagDto> tagsDto = new ArrayList<>();
-
-        for (Tag tag: tagRepository.getTagsByProject(project)) {
-            tagsDto.add(tagMapper.toTagDto(tag));
-        }
-
-        return tagsDto;
+    public List<Tag> getAllAllowedProjectTags(Project project) {
+        return tagRepository.getTagsByProject(project);
     }
 
     @Override

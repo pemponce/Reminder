@@ -28,4 +28,9 @@ public class ProjectController {
 
        return projectService.findProjectsByUser_id(userService.getCurrentUser().getId());
     }
+
+    @GetMapping("/getProject/{projectId}")
+    public Project getProjectById(@PathVariable Long projectId) {
+        return projectService.getProjectById(projectId);
+    }
 }
