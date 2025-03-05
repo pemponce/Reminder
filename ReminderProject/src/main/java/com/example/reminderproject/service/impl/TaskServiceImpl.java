@@ -126,14 +126,4 @@ public class TaskServiceImpl implements TaskService {
 
         return res;
     }
-
-    @Override
-    public List<Long> getTasksId(List<Task> tasks) {
-        List<Long> ids = new ArrayList<>();
-
-        for (Task task : tasks) {
-            ids.add(task.getId());
-        }
-        return ids;
-    }
 }

@@ -16,6 +16,7 @@ public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JoinColumn(name = "task_tags", nullable = false)
     private Long id;
 
     @ManyToOne

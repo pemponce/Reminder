@@ -4,13 +4,16 @@ import com.example.reminderproject.dto.TagDto;
 import com.example.reminderproject.mapper.TagMapper;
 import com.example.reminderproject.model.Project;
 import com.example.reminderproject.model.Tag;
+import com.example.reminderproject.model.Task;
 import com.example.reminderproject.repository.TagRepository;
 import com.example.reminderproject.service.TagService;
+import com.example.reminderproject.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -57,5 +60,18 @@ public class TagServiceImpl implements TagService {
         }
 
         return tagsId;
+    }
+
+    @Override
+    public List<Tag> getAllTaskTags(Task task) {
+
+        List<Long> tagsIds = task.getTags().stream().map(Tag::getId).toList();
+
+        List<Tag> result = new ArrayList<>();
+        for (Long id:tagsIds) {
+            result.add(tagRepository.getTagById(id));
+        }
+
+        return result;
     }
 }

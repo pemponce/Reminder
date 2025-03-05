@@ -14,5 +14,4 @@ public interface TaskService {
     List<TaskDto> getTasksByStatus( Status taskStatus);
     List<TaskDto> getTasksByTitle(String title);
     List<TaskDto> getTasksByProjectId(Long projectId);
-    List<Long> getTasksId(List<Task> tasks);
 }

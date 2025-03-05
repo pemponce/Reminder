@@ -7,10 +7,8 @@ import com.example.reminderproject.mapper.TaskMapper;
 import com.example.reminderproject.model.ProjectRole;
 import com.example.reminderproject.model.Status;
 import com.example.reminderproject.model.StatusRequestDto;
-import com.example.reminderproject.service.ProjectService;
-import com.example.reminderproject.service.ProjectUsersService;
-import com.example.reminderproject.service.TaskService;
-import com.example.reminderproject.service.UserService;
+import com.example.reminderproject.model.Tag;
+import com.example.reminderproject.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -28,6 +26,7 @@ public class TaskController {
     private final static Logger LOGGER= LoggerFactory.getLogger(TaskController.class);
 
     private final TaskService taskService;
+    private final TagService tagService;
     private final TaskMapper taskMapper;
     private final UserService userService;
     private final ProjectService projectService;
@@ -85,6 +84,19 @@ public class TaskController {
         }  else {
             throw new UserNotAllowedToThisProjectException(currUser.getUsername());
         }
+    }
+
+    @GetMapping("/{task_id}/tags")
+    @Operation(summary = "Доступен только авторизованным пользователям")
+    public List<Tag> taskTags(@PathVariable Long task_id, @PathVariable Long projectId) {
+        var project = projectService.getProjectById(projectId);
+        var task = taskService.getTaskById(task_id);
+
+        if (project == null) {
+            throw new ProjectNotFoundException(projectId);
+        }
+
+        return tagService.getAllTaskTags(task);
     }
 
     @GetMapping("/show")
