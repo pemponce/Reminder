@@ -3,6 +3,7 @@ package com.example.reminderproject.controller;
 import com.example.reminderproject.dto.ProjectRoleRequest;
 import com.example.reminderproject.dto.TaskDto;
 import com.example.reminderproject.model.ProjectRole;
+import com.example.reminderproject.model.Task;
 import com.example.reminderproject.service.ProjectUsersService;
 import com.example.reminderproject.service.TaskService;
 import com.example.reminderproject.service.UserService;
@@ -22,7 +23,7 @@ public class ProjectPageController {
     private final UserService userService;
 
     @GetMapping
-    public List<TaskDto> showPage(@PathVariable Long projectId) {
+    public List<Task> showPage(@PathVariable Long projectId) {
 
         return taskService.getTasksByProjectId(projectId);
     }

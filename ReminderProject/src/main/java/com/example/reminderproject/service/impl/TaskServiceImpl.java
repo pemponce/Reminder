@@ -111,14 +111,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDto> getTasksByProjectId(Long projectId) {
+    public List<Task> getTasksByProjectId(Long projectId) {
         var currUser = userService.getCurrentUser();
-        List<TaskDto> res = new ArrayList<>();
+        List<Task> res;
         if (projectUsersRepository.getProjectUsersByUserIdAndProjectId(currUser.getId(), projectId) != null) {
 
-            for (Task task : taskRepository.getTasksByProject_id(projectId)) {
-                res.add(taskMapper.toTaskDto(task));
-            }
+            res = new ArrayList<>(taskRepository.getTasksByProject_id(projectId));
         } else {
             throw new UserNotAllowedToThisProjectException(currUser.getUsername());
         }

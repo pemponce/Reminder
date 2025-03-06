@@ -4,10 +4,7 @@ import com.example.reminderproject.dto.TaskDto;
 import com.example.reminderproject.exception.ProjectNotFoundException;
 import com.example.reminderproject.exception.UserNotAllowedToThisProjectException;
 import com.example.reminderproject.mapper.TaskMapper;
-import com.example.reminderproject.model.ProjectRole;
-import com.example.reminderproject.model.Status;
-import com.example.reminderproject.model.StatusRequestDto;
-import com.example.reminderproject.model.Tag;
+import com.example.reminderproject.model.*;
 import com.example.reminderproject.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -101,7 +98,7 @@ public class TaskController {
 
     @GetMapping("/show")
     @Operation(summary = "Доступен только авторизованным пользователям")
-    public List<TaskDto> projectTaskList(@PathVariable Long projectId) {
+    public List<Task> projectTaskList(@PathVariable Long projectId) {
 
         return taskService.getTasksByProjectId(projectId);
     }
