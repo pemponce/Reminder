@@ -1,6 +1,7 @@
 package com.example.reminderproject.service.impl;
 
 import com.example.reminderproject.dto.TaskDto;
+import com.example.reminderproject.exception.TaskAlreadyFinishedOrTimeWasExpiredException;
 import com.example.reminderproject.exception.UserNotAllowedToThisProjectException;
 import com.example.reminderproject.mapper.TaskMapper;
 import com.example.reminderproject.model.*;
@@ -19,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -50,7 +50,16 @@ public class TaskServiceImpl implements TaskService {
 
         List<Tag> tags = tagRepository.findAllById(requestedTagIds);
 
-        Task task = Task.builder().title(taskDto.getTitle()).status(taskDto.getStatus()).attachmentPath(taskDto.getAttachmentPath()).content(taskDto.getContent()).author(taskDto.getAuthor()).project(taskDto.getProject()).tags(tags).deadline(taskDto.getDeadline()).build();
+        Task task = Task.builder()
+                .title(taskDto.getTitle())
+                .status(taskDto.getStatus())
+                .attachmentPath(taskDto.getAttachmentPath())
+                .content(taskDto.getContent())
+                .author(taskDto.getAuthor())
+                .project(taskDto.getProject())
+                .tags(tags)
+                .deadline(taskDto.getDeadline())
+                .build();
 
 
         taskRepository.save(task);
@@ -64,6 +73,26 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void editTask(Task task) {
         taskRepository.save(task);
+    }
+
+    @Override
+    public void switchTaskStatusToInProcess(Task task) {
+        if (task.getStatus().equals(Status.TODO)) {
+            task.setStatus(Status.IN_PROCESS);
+            taskRepository.save(task);
+        } else {
+            throw new TaskAlreadyFinishedOrTimeWasExpiredException();
+        }
+    }
+
+    @Override
+    public void switchTaskStatusToDone(Task task) {
+        if (task.getStatus().equals(Status.TODO) || task.getStatus().equals(Status.IN_PROCESS)) {
+            task.setStatus(Status.DONE);
+            taskRepository.save(task);
+        } else {
+            throw new TaskAlreadyFinishedOrTimeWasExpiredException();
+        }
     }
 
     @Override
